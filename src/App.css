@@ -679,7 +679,84 @@ button { cursor: pointer; }
   cursor: not-allowed;
   opacity: 0.5;
 }
+/* Analytics Panel Styles */
+.workload-panel {
+  margin-top: 24px;
+}
 
+.workload-member-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.workload-member-row:last-child {
+  border-bottom: none;
+}
+
+.workload-member-row:first-child {
+  padding-top: 18px;
+}
+
+.workload-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+
+.workload-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.workload-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--paper);
+}
+
+.workload-role {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.workload-bar-container {
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.workload-bar-track {
+  height: 6px;
+  background: var(--surface-3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.workload-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s var(--ease);
+}
+
+.workload-percentage {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--paper-dim);
+  width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
 @media (min-width: 640px) {
   .task-modal-actions,
   .member-modal-actions {

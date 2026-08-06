@@ -139,32 +139,37 @@ function WorkloadPanel({ team, tasks }) {
   }
 
   return (
-    <div className="panel blueprint mt-4">
+    <div className="panel blueprint workload-panel">
       <div className="panel-head">
         <div className="panel-title">Workload by teammate</div>
         <div className="panel-sub">CAPACITY</div>
       </div>
 
-      {team.map(m => (
-        <div key={m.id} className="flex items-center gap-3 py-3 border-b border-line-soft last:border-0">
-          <div
-            className="w-7 h-7 rounded-full grid place-items-center font-mono text-[10px] font-semibold text-ink flex-none"
-            style={{ background: m.color }}
-          >
-            {initials(m.name)}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-semibold mb-0.5">{m.name}</div>
-            <div className="font-mono text-[10.5px] text-muted">{m.role}</div>
-          </div>
-          <div className="w-[140px]">
-            <div className="h-1.5 bg-surface-3 rounded-sm overflow-hidden">
-              <div className="h-full rounded-sm" style={{ width: `${m.workload}%`, background: m.color }} />
+      <div>
+        {team.map(m => (
+          <div key={m.id} className="workload-member-row">
+            <div
+              className="workload-avatar"
+              style={{ background: m.color }}
+            >
+              {initials(m.name)}
             </div>
+            <div className="workload-info">
+              <div className="workload-name">{m.name}</div>
+              <div className="workload-role">{m.role}</div>
+            </div>
+            <div className="workload-bar-container">
+              <div className="workload-bar-track">
+                <div 
+                  className="workload-bar-fill" 
+                  style={{ width: `${m.workload}%`, background: m.color }} 
+                />
+              </div>
+            </div>
+            <div className="workload-percentage">{m.workload}%</div>
           </div>
-          <div className="font-mono text-[10.5px] text-paper-dim w-9 text-right">{m.workload}%</div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }
