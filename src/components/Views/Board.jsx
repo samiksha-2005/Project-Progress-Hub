@@ -9,8 +9,11 @@ const columns = [
 
 const priorityColor = { low: '#7C8CAA', medium: '#FFB454', high: '#FF6B6B' }
 
-function Board({ tasks, projects, team, onTaskMove, onNewTask, searchQuery }) {
+function Board({ tasks, projects, team, onTaskMove, onNewTask, searchQuery, searchResults }) {
   const [draggedId, setDraggedId] = useState(null)
+
+  // Use search results if available, otherwise use all tasks
+  const displayTasks = searchQuery && searchResults ? searchResults.tasks : tasks
 
   return (
     <section>
@@ -31,30 +34,39 @@ function Board({ tasks, projects, team, onTaskMove, onNewTask, searchQuery }) {
         </button>
       </div>
 
-      <div className="board">
-        {columns.map(col => (
-          <Column
-            key={col.id}
-            column={col}
-            tasks={tasks.filter(t => {
-              const matchesStatus = t.status === col.id
-              const matchesSearch = !searchQuery || t.title.toLowerCase().includes(searchQuery.toLowerCase())
-              return matchesStatus && matchesSearch
-            })}
-            projects={projects}
-            team={team}
-            draggedId={draggedId}
-            onDragStart={setDraggedId}
-            onDragEnd={() => setDraggedId(null)}
-            onDrop={(taskId) => onTaskMove(taskId, col.id)}
-          />
-        ))}
-      </div>
+      {searchQuery && searchResults && searchResults.total === 0 ? (
+        <div className="panel blueprint p-8 text-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 mx-auto mb-3 text-muted opacity-50">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.3-4.3" />
+            <path d="M11 8v6M8 11h6" />
+          </svg>
+          <div className="text-lg font-medium text-text-primary mb-1">No results found</div>
+          <div className="text-sm text-muted">Try searching with different keywords</div>
+        </div>
+      ) : (
+        <div className="board">
+          {columns.map(col => (
+            <Column
+              key={col.id}
+              column={col}
+              tasks={displayTasks.filter(t => t.status === col.id)}
+              projects={projects}
+              team={team}
+              draggedId={draggedId}
+              onDragStart={setDraggedId}
+              onDragEnd={() => setDraggedId(null)}
+              onDrop={(taskId) => onTaskMove(taskId, col.id)}
+              searchActive={!!searchQuery}
+            />
+          ))}
+        </div>
+      )}
     </section>
   )
 }
 
-function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragEnd, onDrop }) {
+function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragEnd, onDrop, searchActive }) {
   const [isDragOver, setIsDragOver] = useState(false)
 
   const handleDragOver = (e) => {
@@ -87,7 +99,9 @@ function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragE
         onDrop={handleDrop}
       >
         {tasks.length === 0 ? (
-          <div className="text-center text-muted font-mono text-[11px] py-5 px-1">No tasks here</div>
+          <div className="text-center text-muted font-mono text-[11px] py-5 px-1">
+            {searchActive ? 'No matching tasks' : 'No tasks here'}
+          </div>
         ) : (
           tasks.map(task => (
             <TaskCard
