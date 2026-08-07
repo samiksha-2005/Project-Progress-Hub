@@ -1,12 +1,15 @@
 import { useEffect, useRef } from 'react'
 
-function Overview({ state, onNewTask }) {
+function Overview({ state, onNewTask, searchQuery, searchResults }) {
   const stats = {
     totalProjects: state.projects.length,
     activeTasks: state.tasks.filter(t => t.status !== 'done').length,
     doneThisWeek: state.tasks.filter(t => t.status === 'done').length,
     teamMembers: state.team.length,
   }
+
+  // Use search results if available
+  const displayProjects = searchQuery && searchResults ? searchResults.projects : state.projects
 
   return (
     <section>
@@ -27,12 +30,26 @@ function Overview({ state, onNewTask }) {
         </button>
       </div>
 
-      <StatGrid stats={stats} />
+      {searchQuery && searchResults && searchResults.total === 0 ? (
+        <div className="panel blueprint p-8 text-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 mx-auto mb-3 text-muted opacity-50">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.3-4.3" />
+            <path d="M11 8v6M8 11h6" />
+          </svg>
+          <div className="text-lg font-medium text-text-primary mb-1">No results found</div>
+          <div className="text-sm text-muted">Try searching with different keywords</div>
+        </div>
+      ) : (
+        <>
+          {!searchQuery && <StatGrid stats={stats} />}
 
-      <div className="overview-grid">
-        <ProjectsPanel projects={state.projects} tasks={state.tasks} />
-        <ActivityPanel activity={state.activity} />
-      </div>
+          <div className="overview-grid">
+            <ProjectsPanel projects={displayProjects} tasks={state.tasks} searchQuery={searchQuery} />
+            {!searchQuery && <ActivityPanel activity={state.activity} />}
+          </div>
+        </>
+      )}
     </section>
   )
 }
@@ -114,7 +131,7 @@ function StatCard({ label, value, trend, up, icon, delay }) {
   )
 }
 
-function ProjectsPanel({ projects, tasks }) {
+function ProjectsPanel({ projects, tasks, searchQuery }) {
   const fmtDate = (d) => {
     const dt = new Date(d + 'T00:00:00')
     return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -124,26 +141,32 @@ function ProjectsPanel({ projects, tasks }) {
     <div className="panel blueprint">
       <div className="panel-head">
         <div className="panel-title">Project progress</div>
-        <div className="panel-sub">{projects.length} ACTIVE</div>
+        <div className="panel-sub">{projects.length} {searchQuery ? 'FOUND' : 'ACTIVE'}</div>
       </div>
 
-      {projects.map(p => (
-        <div key={p.id} className="proj-row">
-          <div
-            className="proj-ring"
-            style={{ background: `conic-gradient(${p.color} ${p.progress * 3.6}deg, var(--surface-2) 0deg)` }}
-          >
-            <span className="proj-ring-val">{p.progress}%</span>
-          </div>
-          <div className="proj-info">
-            <div className="proj-name">{p.name}</div>
-            <div className="proj-meta">{tasks.filter(t => t.project === p.id).length} tasks</div>
-          </div>
-          <div className="proj-due">
-            DUE<br />{fmtDate(p.due)}
-          </div>
+      {projects.length === 0 ? (
+        <div className="text-center text-muted font-mono text-[11px] py-5 px-3">
+          {searchQuery ? 'No matching projects' : 'No projects yet'}
         </div>
-      ))}
+      ) : (
+        projects.map(p => (
+          <div key={p.id} className="proj-row">
+            <div
+              className="proj-ring"
+              style={{ background: `conic-gradient(${p.color} ${p.progress * 3.6}deg, var(--surface-2) 0deg)` }}
+            >
+              <span className="proj-ring-val">{p.progress}%</span>
+            </div>
+            <div className="proj-info">
+              <div className="proj-name">{p.name}</div>
+              <div className="proj-meta">{tasks.filter(t => t.project === p.id).length} tasks</div>
+            </div>
+            <div className="proj-due">
+              DUE<br />{fmtDate(p.due)}
+            </div>
+          </div>
+        ))
+      )}
     </div>
   )
 }
