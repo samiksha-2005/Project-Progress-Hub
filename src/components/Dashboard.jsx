@@ -54,6 +54,7 @@ function Dashboard({ onLogout, showToast }) {
         onViewChange={setCurrentView}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        onLogout={onLogout}
       />
 
       <div className={`fixed inset-0 bg-black/50 z-40 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`} onClick={() => setSidebarOpen(false)} />

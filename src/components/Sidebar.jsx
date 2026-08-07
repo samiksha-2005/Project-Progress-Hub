@@ -1,4 +1,4 @@
-function Sidebar({ projects, currentView, onViewChange, isOpen, onClose }) {
+function Sidebar({ projects, currentView, onViewChange, isOpen, onClose, onLogout }) {
   return (
     <aside className={`
       sidebar blueprint
@@ -54,9 +54,16 @@ function Sidebar({ projects, currentView, onViewChange, isOpen, onClose }) {
       </nav>
 
       <div className="sidebar-footer">
-        <div className="storage-note">
-          SESSION-ONLY STATE<br />Data resets on reload — this demo keeps state in memory, no local storage used.
-        </div>
+        <a
+          href="#"
+          onClick={(e) => { e.preventDefault(); onLogout && onLogout(); }}
+          className="nav-item logout-btn"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" />
+          </svg>
+          Log out
+        </a>
       </div>
     </aside>
   )
