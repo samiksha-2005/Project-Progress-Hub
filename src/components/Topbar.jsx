@@ -9,7 +9,7 @@ function Topbar({ onMenuClick, onSearch, onLogout, onRefresh, apiStatus }) {
       </button>
 
       <div className="search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"     className="w-3.5 h-3.5 text-muted">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5 text-muted">
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.3-4.3" />
         </svg>
@@ -38,16 +38,12 @@ function Topbar({ onMenuClick, onSearch, onLogout, onRefresh, apiStatus }) {
           </svg>
         </button>
 
-        <a
-          href="#"
-          onClick={(e) => { e.preventDefault(); onLogout(); }}
-          className="user-chip"
-        >
+        <div className="user-chip">
           <div className="avatar bg-amber">
             YO
           </div>
           <span className="user-chip-name hidden sm:block">You · Intern</span>
-        </a>
+        </div>
       </div>
     </header>
   )
