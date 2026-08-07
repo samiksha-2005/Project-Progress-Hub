@@ -15,6 +15,7 @@ function Dashboard({ onLogout, showToast }) {
   const [showTaskModal, setShowTaskModal] = useState(false)
   const [showMemberModal, setShowMemberModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState(null)
   
   const { state, addTask, addMember, moveTask, apiStatus, refreshTeam } = useAppState(showToast)
 
@@ -42,7 +43,62 @@ function Dashboard({ onLogout, showToast }) {
 
   const handleSearch = (query) => {
     setSearchQuery(query)
-    if (query) setCurrentView('board')
+    
+    if (!query.trim()) {
+      setSearchResults(null)
+      return
+    }
+
+    const lowerQuery = query.toLowerCase()
+    
+    // Search in tasks
+    const taskResults = state.tasks.filter(task => 
+      task.title.toLowerCase().includes(lowerQuery) ||
+      task.description?.toLowerCase().includes(lowerQuery) ||
+      task.status.toLowerCase().includes(lowerQuery)
+    )
+
+    // Search in team members
+    const teamResults = state.team.filter(member =>
+      member.name.toLowerCase().includes(lowerQuery) ||
+      member.role.toLowerCase().includes(lowerQuery) ||
+      member.email?.toLowerCase().includes(lowerQuery)
+    )
+
+    // Search in projects
+    const projectResults = state.projects.filter(project =>
+      project.name.toLowerCase().includes(lowerQuery)
+    )
+
+    const results = {
+      tasks: taskResults,
+      team: teamResults,
+      projects: projectResults,
+      total: taskResults.length + teamResults.length + projectResults.length
+    }
+
+    setSearchResults(results)
+
+    // Auto-switch to the view with most results
+    if (results.total === 0) {
+      // Stay on current view, will show "no results"
+      return
+    }
+
+    if (taskResults.length > 0 && taskResults.length >= teamResults.length && taskResults.length >= projectResults.length) {
+      setCurrentView('board')
+    } else if (teamResults.length > 0 && teamResults.length >= taskResults.length && teamResults.length >= projectResults.length) {
+      setCurrentView('team')
+    } else if (projectResults.length > 0) {
+      setCurrentView('overview')
+    }
+  }
+
+  // Clear search when view changes manually
+  const handleViewChange = (view) => {
+    setCurrentView(view)
+    setSearchQuery('')
+    setSearchResults(null)
   }
 
   return (
@@ -51,7 +107,7 @@ function Dashboard({ onLogout, showToast }) {
       <Sidebar
         projects={state.projects}
         currentView={currentView}
-        onViewChange={setCurrentView}
+        onViewChange={handleViewChange}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onLogout={onLogout}
@@ -76,10 +132,30 @@ function Dashboard({ onLogout, showToast }) {
             <span>{apiStatus.message}</span>
           </div>
 
+          {/* Show search results summary */}
+          {searchQuery && searchResults && (
+            <div className="mb-4 p-3 border border-line-soft rounded-[3px] bg-bg-soft">
+              <div className="text-sm text-text-primary mb-2">
+                Search results for "<span className="font-medium">{searchQuery}</span>"
+              </div>
+              {searchResults.total === 0 ? (
+                <div className="text-sm text-muted">No results found</div>
+              ) : (
+                <div className="flex gap-4 text-xs text-muted">
+                  {searchResults.tasks.length > 0 && <span>{searchResults.tasks.length} task(s)</span>}
+                  {searchResults.team.length > 0 && <span>{searchResults.team.length} team member(s)</span>}
+                  {searchResults.projects.length > 0 && <span>{searchResults.projects.length} project(s)</span>}
+                </div>
+              )}
+            </div>
+          )}
+
           {currentView === 'overview' && (
             <Overview
               state={state}
               onNewTask={() => setShowTaskModal(true)}
+              searchQuery={searchQuery}
+              searchResults={searchResults}
             />
           )}
           {currentView === 'board' && (
@@ -90,6 +166,7 @@ function Dashboard({ onLogout, showToast }) {
               onTaskMove={handleTaskMove}
               onNewTask={() => setShowTaskModal(true)}
               searchQuery={searchQuery}
+              searchResults={searchResults}
             />
           )}
           {currentView === 'team' && (
@@ -98,12 +175,16 @@ function Dashboard({ onLogout, showToast }) {
               tasks={state.tasks}
               projects={state.projects}
               onAddMember={() => setShowMemberModal(true)}
+              searchQuery={searchQuery}
+              searchResults={searchResults}
             />
           )}
           {currentView === 'analytics' && (
             <Analytics
               tasks={state.tasks}
               team={state.team}
+              searchQuery={searchQuery}
+              searchResults={searchResults}
             />
           )}
         </main>

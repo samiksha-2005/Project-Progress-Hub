@@ -9,7 +9,7 @@ function Topbar({ onMenuClick, onSearch, onLogout, onRefresh, apiStatus }) {
       </button>
 
       <div className="search-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"     className="w-3.5 h-3.5 text-muted">
           <circle cx="11" cy="11" r="7" />
           <path d="M21 21l-4.3-4.3" />
         </svg>
@@ -19,7 +19,6 @@ function Topbar({ onMenuClick, onSearch, onLogout, onRefresh, apiStatus }) {
           onChange={(e) => onSearch(e.target.value)}
         />
       </div>
-
       <div className="topbar-right">
         <button className="icon-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4">

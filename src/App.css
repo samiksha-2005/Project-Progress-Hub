@@ -1864,3 +1864,18 @@ button {
 .logout-btn:active svg {
   color: var(--coral);
 }
+.search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 360px;
+  display: flex;
+  align-items: center;
+}
+.search-wrap svg {
+  position: absolute;
+  left: 11px;
+  width: 14px;
+  height: 14px;
+  color: var(--muted);
+  pointer-events: none;
+}
