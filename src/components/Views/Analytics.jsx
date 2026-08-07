@@ -1,4 +1,4 @@
-function Analytics({ tasks, team }) {
+function Analytics({ tasks, team, searchQuery, searchResults }) {
   const columns = [
     { id: 'todo', name: 'To do', flag: '#7C8CAA' },
     { id: 'inprogress', name: 'In progress', flag: '#FFB454' },
@@ -6,10 +6,14 @@ function Analytics({ tasks, team }) {
     { id: 'done', name: 'Done', flag: '#6EE7B7' },
   ]
 
-  const total = tasks.length || 1
+  // Use search results if available
+  const displayTasks = searchQuery && searchResults ? searchResults.tasks : tasks
+  const displayTeam = searchQuery && searchResults ? searchResults.team : team
+
+  const total = displayTasks.length || 1
   const groups = columns.map(c => ({
     ...c,
-    count: tasks.filter(t => t.status === c.id).length,
+    count: displayTasks.filter(t => t.status === c.id).length,
   }))
 
   const initials = (name) => {
@@ -26,17 +30,31 @@ function Analytics({ tasks, team }) {
         </div>
       </div>
 
-      <div className="analytics-grid">
-        <DonutChart groups={groups} total={total} />
-        <BarChart tasks={tasks} />
-      </div>
+      {searchQuery && searchResults && searchResults.total === 0 ? (
+        <div className="panel blueprint p-8 text-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 mx-auto mb-3 text-muted opacity-50">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.3-4.3" />
+            <path d="M11 8v6M8 11h6" />
+          </svg>
+          <div className="text-lg font-medium text-text-primary mb-1">No results found</div>
+          <div className="text-sm text-muted">Try searching with different keywords</div>
+        </div>
+      ) : (
+        <>
+          <div className="analytics-grid">
+            <DonutChart groups={groups} total={total} searchQuery={searchQuery} />
+            <BarChart tasks={displayTasks} />
+          </div>
 
-      <WorkloadPanel team={team} tasks={tasks} />
+          <WorkloadPanel team={displayTeam} tasks={displayTasks} searchQuery={searchQuery} />
+        </>
+      )}
     </section>
   )
 }
 
-function DonutChart({ groups, total }) {
+function DonutChart({ groups, total, searchQuery }) {
   let acc = 0
   const r = 60, cx = 80, cy = 80, circumference = 2 * Math.PI * r
 
@@ -44,7 +62,7 @@ function DonutChart({ groups, total }) {
     <div className="panel blueprint">
       <div className="panel-head">
         <div className="panel-title">Status distribution</div>
-        <div className="panel-sub">{total} TOTAL</div>
+        <div className="panel-sub">{total} {searchQuery ? 'FOUND' : 'TOTAL'}</div>
       </div>
 
       <div className="flex items-center gap-6 flex-wrap">
@@ -133,7 +151,7 @@ function BarChart({ tasks }) {
   )
 }
 
-function WorkloadPanel({ team, tasks }) {
+function WorkloadPanel({ team, tasks, searchQuery }) {
   const initials = (name) => {
     return name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('')
   }
@@ -142,34 +160,40 @@ function WorkloadPanel({ team, tasks }) {
     <div className="panel blueprint workload-panel">
       <div className="panel-head">
         <div className="panel-title">Workload by teammate</div>
-        <div className="panel-sub">CAPACITY</div>
+        <div className="panel-sub">{searchQuery ? `${team.length} FOUND` : 'CAPACITY'}</div>
       </div>
 
-      <div>
-        {team.map(m => (
-          <div key={m.id} className="workload-member-row">
-            <div
-              className="workload-avatar"
-              style={{ background: m.color }}
-            >
-              {initials(m.name)}
-            </div>
-            <div className="workload-info">
-              <div className="workload-name">{m.name}</div>
-              <div className="workload-role">{m.role}</div>
-            </div>
-            <div className="workload-bar-container">
-              <div className="workload-bar-track">
-                <div 
-                  className="workload-bar-fill" 
-                  style={{ width: `${m.workload}%`, background: m.color }} 
-                />
+      {team.length === 0 ? (
+        <div className="text-center text-muted font-mono text-[11px] py-5 px-3">
+          {searchQuery ? 'No matching team members' : 'No team members yet'}
+        </div>
+      ) : (
+        <div>
+          {team.map(m => (
+            <div key={m.id} className="workload-member-row">
+              <div
+                className="workload-avatar"
+                style={{ background: m.color }}
+              >
+                {initials(m.name)}
               </div>
+              <div className="workload-info">
+                <div className="workload-name">{m.name}</div>
+                <div className="workload-role">{m.role}</div>
+              </div>
+              <div className="workload-bar-container">
+                <div className="workload-bar-track">
+                  <div 
+                    className="workload-bar-fill" 
+                    style={{ width: `${m.workload}%`, background: m.color }} 
+                  />
+                </div>
+              </div>
+              <div className="workload-percentage">{m.workload}%</div>
             </div>
-            <div className="workload-percentage">{m.workload}%</div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
