@@ -219,7 +219,23 @@ button { cursor: pointer; }
 .task-due.overdue { color: var(--coral); }
 .task-avatar { width: 22px; height: 22px; border-radius: 50%; font-family: 'JetBrains Mono', monospace; font-size: 9px; display: grid; place-items: center; font-weight: 600; color: var(--ink); }
 .task-priority { width: 5px; height: 5px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+}
 .member-card { padding: 18px; border-radius: var(--radius); opacity: 0; animation: cardIn 0.45s var(--ease) forwards; }
 .member-top { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
 .member-avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; color: var(--ink); flex: none; }
