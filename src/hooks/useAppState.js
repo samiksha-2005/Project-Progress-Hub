@@ -12,8 +12,17 @@ const localFallbackTeam = [
   { name: 'Anika Rao', role: 'Project Manager' },
 ]
 
-export function useAppState(showToast) {
-  const [state, setState] = useState({
+const getInitialState = () => {
+  const saved = localStorage.getItem('appState')
+  if (saved) {
+    try {
+      return JSON.parse(saved)
+    } catch (e) {
+      console.error('Failed to parse saved state:', e)
+    }
+  }
+  
+  return {
     projects: [
       { id: 'p1', name: 'Aurora Mobile App', color: '#FFB454', progress: 64, due: '2026-08-22' },
       { id: 'p2', name: 'Ledger Billing Engine', color: '#6EE7B7', progress: 38, due: '2026-09-05' },
@@ -24,13 +33,22 @@ export function useAppState(showToast) {
     tasks: [],
     activity: [],
     idSeed: 100,
-  })
+  }
+}
+
+export function useAppState(showToast) {
+  const [state, setState] = useState(getInitialState)
 
   const [apiStatus, setApiStatus] = useState({
     loading: false,
     error: false,
     message: 'API integration ready — team roster syncs from a live REST endpoint (jsonplaceholder.typicode.com/users).',
   })
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('appState', JSON.stringify(state))
+  }, [state])
 
   const uid = (prefix) => {
     setState(prev => ({ ...prev, idSeed: prev.idSeed + 1 }))
@@ -155,7 +173,10 @@ export function useAppState(showToast) {
   }
 
   useEffect(() => {
-    seedTasks()
+    // Only seed tasks if we don't have any saved
+    if (state.tasks.length === 0) {
+      seedTasks()
+    }
   }, [])
 
   useEffect(() => {
@@ -197,6 +218,13 @@ export function useAppState(showToast) {
     }))
   }
 
+  const deleteTask = (taskId) => {
+    setState(prev => ({
+      ...prev,
+      tasks: prev.tasks.filter(t => t.id !== taskId),
+    }))
+  }
+
   const refreshTeam = () => {
     showToast('Refreshing roster from API…')
     loadTeamFromAPI()
@@ -207,6 +235,7 @@ export function useAppState(showToast) {
     addTask,
     addMember,
     moveTask,
+    deleteTask,
     apiStatus,
     refreshTeam,
   }

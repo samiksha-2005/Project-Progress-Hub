@@ -9,7 +9,7 @@ const columns = [
 
 const priorityColor = { low: '#7C8CAA', medium: '#FFB454', high: '#FF6B6B' }
 
-function Board({ tasks, projects, team, onTaskMove, onNewTask, searchQuery, searchResults }) {
+function Board({ tasks, projects, team, onTaskMove, onNewTask, onTaskDelete, searchQuery, searchResults }) {
   const [draggedId, setDraggedId] = useState(null)
 
   // Use search results if available, otherwise use all tasks
@@ -57,6 +57,7 @@ function Board({ tasks, projects, team, onTaskMove, onNewTask, searchQuery, sear
               onDragStart={setDraggedId}
               onDragEnd={() => setDraggedId(null)}
               onDrop={(taskId) => onTaskMove(taskId, col.id)}
+              onTaskDelete={onTaskDelete}
               searchActive={!!searchQuery}
             />
           ))}
@@ -66,7 +67,7 @@ function Board({ tasks, projects, team, onTaskMove, onNewTask, searchQuery, sear
   )
 }
 
-function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragEnd, onDrop, searchActive }) {
+function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragEnd, onDrop, onTaskDelete, searchActive }) {
   const [isDragOver, setIsDragOver] = useState(false)
 
   const handleDragOver = (e) => {
@@ -111,6 +112,7 @@ function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragE
               member={team.find(m => m.id === task.assignee)}
               onDragStart={() => onDragStart(task.id)}
               onDragEnd={onDragEnd}
+              onDelete={() => onTaskDelete(task.id)}
               isDragging={draggedId === task.id}
             />
           ))
@@ -120,7 +122,7 @@ function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragE
   )
 }
 
-function TaskCard({ task, project, member, onDragStart, onDragEnd, isDragging }) {
+function TaskCard({ task, project, member, onDragStart, onDragEnd, onDelete, isDragging }) {
   const fmtDate = (d) => {
     const dt = new Date(d + 'T00:00:00')
     return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -134,13 +136,30 @@ function TaskCard({ task, project, member, onDragStart, onDragEnd, isDragging })
 
   const overdue = task.status !== 'done' && isOverdue(task.due)
 
+  const handleDelete = (e) => {
+    e.stopPropagation()
+    if (window.confirm('Are you sure you want to delete this task?')) {
+      onDelete()
+    }
+  }
+
   return (
     <div
       draggable
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
-      className={`task-card ${isDragging ? 'dragging' : ''}`}
+      className={`task-card ${isDragging ? 'dragging' : ''} relative group`}
     >
+      <button
+        onClick={handleDelete}
+        className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-red-500/10 border border-red-500/20 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all duration-200 z-10"
+        title="Delete task"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3 text-red-500">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+
       <span
         className="task-tag"
         style={{

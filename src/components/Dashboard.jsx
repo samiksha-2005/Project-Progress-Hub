@@ -17,7 +17,7 @@ function Dashboard({ onLogout, showToast }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState(null)
   
-  const { state, addTask, addMember, moveTask, apiStatus, refreshTeam } = useAppState(showToast)
+  const { state, addTask, addMember, moveTask, deleteTask, apiStatus, refreshTeam } = useAppState(showToast)
 
   const handleTaskAdd = (task) => {
     addTask(task)
@@ -38,6 +38,14 @@ function Dashboard({ onLogout, showToast }) {
     if (task) {
       moveTask(taskId, newStatus)
       showToast(`Moved "${task.title}" to ${newStatus}`)
+    }
+  }
+
+  const handleTaskDelete = (taskId) => {
+    const task = state.tasks.find(t => t.id === taskId)
+    if (task) {
+      deleteTask(taskId)
+      showToast(`Deleted "${task.title}"`)
     }
   }
 
@@ -164,6 +172,7 @@ function Dashboard({ onLogout, showToast }) {
               projects={state.projects}
               team={state.team}
               onTaskMove={handleTaskMove}
+              onTaskDelete={handleTaskDelete}
               onNewTask={() => setShowTaskModal(true)}
               searchQuery={searchQuery}
               searchResults={searchResults}

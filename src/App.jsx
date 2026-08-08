@@ -1,11 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import LoginScreen from './components/LoginScreen'
 import Dashboard from './components/Dashboard'
 import Toast from './components/Toast'
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  // Initialize from localStorage
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const saved = localStorage.getItem('isLoggedIn')
+    return saved === 'true'
+  })
+  
   const [toasts, setToasts] = useState([])
+
+  // Persist login state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('isLoggedIn', isLoggedIn)
+  }, [isLoggedIn])
 
   const showToast = (msg, isErr = false) => {
     const id = Date.now()
