@@ -51,6 +51,12 @@ function Team({ team, tasks, projects, onAddMember, onMemberDelete, searchQuery,
         <div className="team-grid">
           {displayTeam.map((m, i) => {
             const taskCount = tasks.filter(t => t.assignee === m.id && t.status !== 'done').length
+            
+            const handleDelete = (e) => {
+              e.stopPropagation()
+              e.preventDefault()
+              onMemberDelete(m.id)
+            }
 
             return (
               <div
@@ -59,10 +65,7 @@ function Team({ team, tasks, projects, onAddMember, onMemberDelete, searchQuery,
                 style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'forwards' }}
               >
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onMemberDelete(m.id)
-                  }}
+                  onClick={handleDelete}
                   className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-red-500/10 border border-red-500/20 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all duration-200 z-10"
                   title="Remove member"
                 >
