@@ -1,4 +1,4 @@
-function Team({ team, tasks, projects, onAddMember, searchQuery, searchResults }) {
+function Team({ team, tasks, projects, onAddMember, onMemberDelete, searchQuery, searchResults }) {
   const initials = (name) => {
     return name.split(' ').filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('')
   }
@@ -51,12 +51,26 @@ function Team({ team, tasks, projects, onAddMember, searchQuery, searchResults }
         <div className="team-grid">
           {displayTeam.map((m, i) => {
             const taskCount = tasks.filter(t => t.assignee === m.id && t.status !== 'done').length
+
             return (
               <div
                 key={m.id}
-                className="member-card panel blueprint"
+                className="member-card panel blueprint relative group"
                 style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'forwards' }}
               >
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onMemberDelete(m.id)
+                  }}
+                  className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-red-500/10 border border-red-500/20 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all duration-200 z-10"
+                  title="Remove member"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3 h-3 text-red-500">
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+
                 <div className="member-top">
                   <div
                     className="member-avatar"

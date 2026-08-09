@@ -209,6 +209,20 @@ export function useAppState(showToast) {
     }))
   }
 
+  const deleteMember = (memberId) => {
+    setState(prev => ({
+      ...prev,
+      // Remove member from team
+      team: prev.team.filter(member => member.id !== memberId),
+      // Unassign this member from all tasks
+      tasks: prev.tasks.map(task => 
+        task.assignee === memberId 
+          ? { ...task, assignee: null } 
+          : task
+      ),
+    }))
+  }
+
   const moveTask = (taskId, newStatus) => {
     setState(prev => ({
       ...prev,
@@ -236,6 +250,7 @@ export function useAppState(showToast) {
     addMember,
     moveTask,
     deleteTask,
+    deleteMember,
     apiStatus,
     refreshTeam,
   }
