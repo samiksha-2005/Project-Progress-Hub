@@ -42,9 +42,11 @@ function Dashboard({ onLogout, showToast }) {
   }
 
   const handleTaskDelete = (taskId) => {
-   deleteTask(taskId)
-  }
-  
+  console.log('Deleting task with ID:', taskId)
+  console.log('Current tasks:', state.tasks.map(t => t.id))
+  deleteTask(taskId)
+}
+
   const handleMemberDelete = (memberId) => {
     deleteMember(memberId)
   }

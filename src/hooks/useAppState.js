@@ -16,7 +16,15 @@ const getInitialState = () => {
   const saved = localStorage.getItem('appState')
   if (saved) {
     try {
-      return JSON.parse(saved)
+      const parsed = JSON.parse(saved)
+      // Ensure idSeed is always higher than any existing IDs
+      const maxTaskId = Math.max(0, ...parsed.tasks.map(t => parseInt(t.id.replace('t', '')) || 0))
+      const maxMemberId = Math.max(0, ...parsed.team.map(m => parseInt(m.id.replace('m', '')) || 0))
+      const maxId = Math.max(maxTaskId, maxMemberId, parsed.idSeed || 100)
+      return {
+        ...parsed,
+        idSeed: maxId
+      }
     } catch (e) {
       console.error('Failed to parse saved state:', e)
     }
@@ -50,11 +58,6 @@ export function useAppState(showToast) {
     localStorage.setItem('appState', JSON.stringify(state))
   }, [state])
 
-  const uid = (prefix) => {
-    setState(prev => ({ ...prev, idSeed: prev.idSeed + 1 }))
-    return prefix + (state.idSeed + 1)
-  }
-
   const seedTasks = () => {
     const taskData = [
       ['Design onboarding flow', 'p1', 'high', 'inprogress', -2],
@@ -71,21 +74,27 @@ export function useAppState(showToast) {
       ['Accessibility audit', 'p1', 'high', 'todo', 10],
     ]
 
-    const tasks = taskData.map(([title, project, priority, status, dueOffset], i) => {
-      const due = new Date()
-      due.setDate(due.getDate() + dueOffset)
+    setState(prev => {
+      const tasks = taskData.map(([title, project, priority, status, dueOffset], i) => {
+        const due = new Date()
+        due.setDate(due.getDate() + dueOffset)
+        return {
+          id: 't' + (prev.idSeed + 1 + i),
+          title,
+          project,
+          priority,
+          status,
+          due: due.toISOString().slice(0, 10),
+          assignee: null,
+        }
+      })
+      
       return {
-        id: 't' + (101 + i),
-        title,
-        project,
-        priority,
-        status,
-        due: due.toISOString().slice(0, 10),
-        assignee: null,
+        ...prev,
+        tasks,
+        idSeed: prev.idSeed + taskData.length
       }
     })
-
-    setState(prev => ({ ...prev, tasks }))
   }
 
   const assignTasksToTeam = (team, tasks) => {
@@ -122,23 +131,26 @@ export function useAppState(showToast) {
       if (!res.ok) throw new Error('Bad response ' + res.status)
       const data = await res.json()
 
-      const team = data.slice(0, 6).map((u, i) => ({
-        id: 'm' + (101 + i),
-        name: u.name,
-        role: ['Frontend Engineer', 'Backend Engineer', 'Product Designer', 'QA Engineer', 'Project Manager', 'DevOps Engineer'][i % 6],
-        color: nextColor(),
-        workload: 30 + Math.round(Math.random() * 60),
-      }))
+      setState(prev => {
+        const team = data.slice(0, 6).map((u, i) => ({
+          id: 'm' + (prev.idSeed + 1 + i),
+          name: u.name,
+          role: ['Frontend Engineer', 'Backend Engineer', 'Product Designer', 'QA Engineer', 'Project Manager', 'DevOps Engineer'][i % 6],
+          color: nextColor(),
+          workload: 30 + Math.round(Math.random() * 60),
+        }))
 
-      const tasksWithAssignees = assignTasksToTeam(team, state.tasks)
-      const activity = seedActivity(team, tasksWithAssignees)
+        const tasksWithAssignees = assignTasksToTeam(team, prev.tasks)
+        const activity = seedActivity(team, tasksWithAssignees)
 
-      setState(prev => ({
-        ...prev,
-        team,
-        tasks: tasksWithAssignees,
-        activity,
-      }))
+        return {
+          ...prev,
+          team,
+          tasks: tasksWithAssignees,
+          activity,
+          idSeed: prev.idSeed + 6
+        }
+      })
 
       setApiStatus({
         loading: false,
@@ -146,23 +158,26 @@ export function useAppState(showToast) {
         message: 'Connected — team roster synced from jsonplaceholder.typicode.com/users (GET).',
       })
     } catch (err) {
-      const team = localFallbackTeam.map((p, i) => ({
-        id: 'm' + (101 + i),
-        name: p.name,
-        role: p.role,
-        color: nextColor(),
-        workload: 30 + Math.round(Math.random() * 60),
-      }))
+      setState(prev => {
+        const team = localFallbackTeam.map((p, i) => ({
+          id: 'm' + (prev.idSeed + 1 + i),
+          name: p.name,
+          role: p.role,
+          color: nextColor(),
+          workload: 30 + Math.round(Math.random() * 60),
+        }))
 
-      const tasksWithAssignees = assignTasksToTeam(team, state.tasks)
-      const activity = seedActivity(team, tasksWithAssignees)
+        const tasksWithAssignees = assignTasksToTeam(team, prev.tasks)
+        const activity = seedActivity(team, tasksWithAssignees)
 
-      setState(prev => ({
-        ...prev,
-        team,
-        tasks: tasksWithAssignees,
-        activity,
-      }))
+        return {
+          ...prev,
+          team,
+          tasks: tasksWithAssignees,
+          activity,
+          idSeed: prev.idSeed + 5
+        }
+      })
 
       setApiStatus({
         loading: false,
@@ -186,27 +201,35 @@ export function useAppState(showToast) {
   }, [state.tasks])
 
   const addTask = (task) => {
-    const newTask = {
-      ...task,
-      id: uid('t'),
-    }
-    setState(prev => ({
-      ...prev,
-      tasks: [newTask, ...prev.tasks],
-    }))
+    setState(prev => {
+      const newId = 't' + (prev.idSeed + 1)
+      const newTask = {
+        ...task,
+        id: newId,
+      }
+      return {
+        ...prev,
+        tasks: [newTask, ...prev.tasks],
+        idSeed: prev.idSeed + 1,
+      }
+    })
   }
 
   const addMember = (member) => {
-    const newMember = {
-      ...member,
-      id: uid('m'),
-      color: nextColor(),
-      workload: 20 + Math.round(Math.random() * 50),
-    }
-    setState(prev => ({
-      ...prev,
-      team: [...prev.team, newMember],
-    }))
+    setState(prev => {
+      const newId = 'm' + (prev.idSeed + 1)
+      const newMember = {
+        ...member,
+        id: newId,
+        color: nextColor(),
+        workload: 20 + Math.round(Math.random() * 50),
+      }
+      return {
+        ...prev,
+        team: [...prev.team, newMember],
+        idSeed: prev.idSeed + 1,
+      }
+    })
   }
 
   const deleteMember = (memberId) => {

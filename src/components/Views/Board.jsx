@@ -46,21 +46,24 @@ function Board({ tasks, projects, team, onTaskMove, onNewTask, onTaskDelete, sea
         </div>
       ) : (
         <div className="board">
-          {columns.map(col => (
-            <Column
-              key={col.id}
-              column={col}
-              tasks={displayTasks.filter(t => t.status === col.id)}
-              projects={projects}
-              team={team}
-              draggedId={draggedId}
-              onDragStart={setDraggedId}
-              onDragEnd={() => setDraggedId(null)}
-              onDrop={(taskId) => onTaskMove(taskId, col.id)}
-              onTaskDelete={onTaskDelete}
-              searchActive={!!searchQuery}
-            />
-          ))}
+          {columns.map(col => {
+            const columnTasks = displayTasks.filter(t => t.status === col.id)
+            return (
+              <Column
+                key={col.id}
+                column={col}
+                tasks={columnTasks}
+                projects={projects}
+                team={team}
+                draggedId={draggedId}
+                onDragStart={setDraggedId}
+                onDragEnd={() => setDraggedId(null)}
+                onDrop={(taskId) => onTaskMove(taskId, col.id)}
+                onTaskDelete={onTaskDelete}
+                searchActive={!!searchQuery}
+              />
+            )
+          })}
         </div>
       )}
     </section>
@@ -104,18 +107,23 @@ function Column({ column, tasks, projects, team, draggedId, onDragStart, onDragE
             {searchActive ? 'No matching tasks' : 'No tasks here'}
           </div>
         ) : (
-          tasks.map(task => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              project={projects.find(p => p.id === task.project)}
-              member={team.find(m => m.id === task.assignee)}
-              onDragStart={() => onDragStart(task.id)}
-              onDragEnd={onDragEnd}
-              onDelete={() => onTaskDelete(task.id)}
-              isDragging={draggedId === task.id}
-            />
-          ))
+          tasks.map(task => {
+            const project = projects.find(p => p.id === task.project)
+            const member = team.find(m => m.id === task.assignee)
+            
+            return (
+              <TaskCard
+                key={task.id}
+                task={task}
+                project={project}
+                member={member}
+                onDragStart={() => onDragStart(task.id)}
+                onDragEnd={onDragEnd}
+                onDelete={() => onTaskDelete(task.id)}
+                isDragging={draggedId === task.id}
+              />
+            )
+          })
         )}
       </div>
     </div>
@@ -136,6 +144,12 @@ function TaskCard({ task, project, member, onDragStart, onDragEnd, onDelete, isD
 
   const overdue = task.status !== 'done' && isOverdue(task.due)
 
+  const handleDelete = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
+    onDelete()
+  }
+
   return (
     <div
       draggable
@@ -144,10 +158,7 @@ function TaskCard({ task, project, member, onDragStart, onDragEnd, onDelete, isD
       className={`task-card ${isDragging ? 'dragging' : ''} relative group`}
     >
       <button
-        onClick={(e) => {
-          e.stopPropagation()
-          onDelete()
-        }}
+        onClick={handleDelete}
         className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-red-500/10 border border-red-500/20 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all duration-200 z-10"
         title="Delete task"
       >
