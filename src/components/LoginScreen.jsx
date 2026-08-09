@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Compass from './Compass'
 
-function LoginScreen({ onLogin, showToast }) {
+function LoginScreen({ onLogin, onShowRegister, showToast }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -169,7 +169,7 @@ function LoginScreen({ onLogin, showToast }) {
               </div>
 
               <p className="text-center mt-5 text-[12.5px] text-muted signup-hint">
-                New here? <a href="#" onClick={(e) => { e.preventDefault(); onLogin(); }}>Jump straight to the dashboard →</a>
+                New here? <a href="#" onClick={(e) => { e.preventDefault(); onShowRegister(); }}>Register →</a>
               </p>
             </div>
           </section>

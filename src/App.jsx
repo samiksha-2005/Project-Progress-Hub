@@ -1,38 +1,64 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import LoginScreen from './components/LoginScreen'
+import RegisterScreen from './components/RegisterScreen'
 import Dashboard from './components/Dashboard'
 import Toast from './components/Toast'
 
 function App() {
-  // Initialize from localStorage
-  const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    const saved = localStorage.getItem('isLoggedIn')
-    return saved === 'true'
-  })
-  
-  const [toasts, setToasts] = useState([])
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [showRegister, setShowRegister] = useState(false)
+  const [toast, setToast] = useState({ show: false, message: '', isError: false })
 
-  // Persist login state to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem('isLoggedIn', isLoggedIn)
-  }, [isLoggedIn])
+  const showToast = (message, isError = false) => {
+    setToast({ show: true, message, isError })
+    setTimeout(() => setToast({ show: false, message: '', isError: false }), 3000)
+  }
 
-  const showToast = (msg, isErr = false) => {
-    const id = Date.now()
-    setToasts(prev => [...prev, { id, msg, isErr }])
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id))
-    }, 3000)
+  const handleLogin = () => {
+    setIsAuthenticated(true)
+  }
+
+  const handleRegister = (formData) => {
+    // In a real app, you'd send this to your backend
+    console.log('Registration data:', formData)
+    setIsAuthenticated(true)
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    setShowRegister(false)
+  }
+
+  if (isAuthenticated) {
+    return (
+      <>
+        <Dashboard onLogout={handleLogout} showToast={showToast} />
+        {toast.show && <Toast message={toast.message} isError={toast.isError} />}
+      </>
+    )
+  }
+
+  if (showRegister) {
+    return (
+      <>
+        <RegisterScreen 
+          onRegister={handleRegister}
+          onBackToLogin={() => setShowRegister(false)}
+          showToast={showToast}
+        />
+        {toast.show && <Toast message={toast.message} isError={toast.isError} />}
+      </>
+    )
   }
 
   return (
     <>
-      {!isLoggedIn ? (
-        <LoginScreen onLogin={() => setIsLoggedIn(true)} showToast={showToast} />
-      ) : (
-        <Dashboard onLogout={() => setIsLoggedIn(false)} showToast={showToast} />
-      )}
-      <Toast toasts={toasts} />
+      <LoginScreen 
+        onLogin={handleLogin}
+        onShowRegister={() => setShowRegister(true)}
+        showToast={showToast}
+      />
+      {toast.show && <Toast message={toast.message} isError={toast.isError} />}
     </>
   )
 }
