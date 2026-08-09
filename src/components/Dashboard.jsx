@@ -42,13 +42,9 @@ function Dashboard({ onLogout, showToast }) {
   }
 
   const handleTaskDelete = (taskId) => {
-    const task = state.tasks.find(t => t.id === taskId)
-    if (task) {
-      deleteTask(taskId)
-      showToast(`Deleted "${task.title}"`)
-    }
+   deleteTask(taskId)
   }
-
+  
   const handleMemberDelete = (memberId) => {
     deleteMember(memberId)
   }

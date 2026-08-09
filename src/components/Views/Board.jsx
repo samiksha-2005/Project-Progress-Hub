@@ -136,13 +136,6 @@ function TaskCard({ task, project, member, onDragStart, onDragEnd, onDelete, isD
 
   const overdue = task.status !== 'done' && isOverdue(task.due)
 
-  const handleDelete = (e) => {
-    e.stopPropagation()
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      onDelete()
-    }
-  }
-
   return (
     <div
       draggable
@@ -151,7 +144,10 @@ function TaskCard({ task, project, member, onDragStart, onDragEnd, onDelete, isD
       className={`task-card ${isDragging ? 'dragging' : ''} relative group`}
     >
       <button
-        onClick={handleDelete}
+        onClick={(e) => {
+          e.stopPropagation()
+          onDelete()
+        }}
         className="absolute top-2 right-2 w-5 h-5 flex items-center justify-center bg-red-500/10 border border-red-500/20 rounded opacity-0 group-hover:opacity-100 hover:bg-red-500/20 hover:border-red-500/40 hover:scale-110 active:scale-95 transition-all duration-200 z-10"
         title="Delete task"
       >

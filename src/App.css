@@ -744,6 +744,11 @@ button {
   flex: 1;
   min-height: 120px;
   transition: background 0.18s var(--ease);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / old Edge */
+}
+.col-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, newer Edge */
 }
 .col-body.drag-over {
   background: rgba(255, 180, 84, 0.06);
