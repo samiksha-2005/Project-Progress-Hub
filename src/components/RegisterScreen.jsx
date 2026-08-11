@@ -76,11 +76,11 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
           <section className="hidden lg:flex flex-1 relative overflow-hidden border-r border-line/70 flex-col justify-between p-10 bg-surface/90 login-art">
             <div className="flex items-center gap-2.5 relative z-10 login-art-top">
               <div className="w-[30px] h-[30px] border-[1.5px] border-amber grid place-items-center font-mono text-[13px] text-amber rotate-45">
-                <span className="-rotate-45">D</span>
+                <span className="-rotate-45">P</span>
               </div>
               <div>
-                <div className="font-display font-semibold text-base">Drafting</div>
-                <div className="font-mono text-[10px] text-muted uppercase tracking-wider">Project Console</div>
+                <div className="font-display font-semibold text-base">Project</div>
+                <div className="font-mono text-[10px] text-muted uppercase tracking-wider">Progress Hub</div>
               </div>
             </div>
 
@@ -119,11 +119,11 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
               <div className="mb-5 login-card-head">
                 <div className="flex items-center gap-2.5 mb-5 lg:hidden brand">
                   <div className="w-[30px] h-[30px] border-[1.5px] border-amber grid place-items-center font-mono text-[13px] text-amber rotate-45">
-                    <span className="-rotate-45">D</span>
+                    <span className="-rotate-45">P</span>
                   </div>
                   <div>
-                    <div className="font-display font-semibold text-base">Drafting</div>
-                    <div className="font-mono text-[10px] text-muted uppercase tracking-wider">Project Console</div>
+                    <div className="font-display font-semibold text-base">Project</div>
+                    <div className="font-mono text-[10px] text-muted uppercase tracking-wider">Progress Hub</div>
                   </div>
                 </div>
                 <h1 className="font-display text-[21px] font-semibold mb-1.5">Create your account</h1>
