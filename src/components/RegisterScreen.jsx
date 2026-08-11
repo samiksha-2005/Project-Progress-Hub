@@ -130,70 +130,81 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
                 <p className="text-[12.5px] text-muted">Get started with your free workspace.</p>
               </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className={`mb-3.5 field ${errors.fullName ? 'has-error' : ''}`}>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+                <div className={`field ${errors.fullName ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Full Name</label>
                   <input
                     type="text"
                     value={formData.fullName}
                     onChange={(e) => handleChange('fullName', e.target.value)}
-                    className={`w-full bg-surface-2 border ${errors.fullName ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                    className={`w-full bg-surface-2 border ${errors.fullName ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 rounded-[3px] text-[16px] sm:text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                     placeholder="John Doe"
                   />
                   {errors.fullName && <div className="field-error mt-1.5">Enter your full name (min. 2 characters).</div>}
                 </div>
 
-                <div className={`mb-3.5 field ${errors.email ? 'has-error' : ''}`}>
+                <div className={`field ${errors.email ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Email</label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className={`w-full bg-surface-2 border ${errors.email ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                    className={`w-full bg-surface-2 border ${errors.email ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 rounded-[3px] text-[16px] sm:text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                     placeholder="you@company.com"
                   />
                   {errors.email && <div className="field-error mt-1.5">Enter a valid email address.</div>}
                 </div>
 
-                <div className={`mb-3.5 field ${errors.company ? 'has-error' : ''}`}>
+                <div className={`field ${errors.company ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Company / Organization</label>
                   <input
                     type="text"
                     value={formData.company}
                     onChange={(e) => handleChange('company', e.target.value)}
-                    className={`w-full bg-surface-2 border ${errors.company ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                    className={`w-full bg-surface-2 border ${errors.company ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 rounded-[3px] text-[16px] sm:text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                     placeholder="Acme Inc."
                   />
                   {errors.company && <div className="field-error mt-1.5">Enter your company name.</div>}
                 </div>
 
-                <div className={`mb-3.5 field ${errors.role ? 'has-error' : ''}`}>
+                <div className={`field ${errors.role ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Your Role</label>
-                  <select
-                    value={formData.role}
-                    onChange={(e) => handleChange('role', e.target.value)}
-                    className={`w-full bg-surface-2 border ${errors.role ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
-                  >
-                    <option value="">Select your role</option>
-                    <option value="Project Manager">Project Manager</option>
-                    <option value="Product Manager">Product Manager</option>
-                    <option value="Team Lead">Team Lead</option>
-                    <option value="Developer">Developer</option>
-                    <option value="Designer">Designer</option>
-                    <option value="QA Engineer">QA Engineer</option>
-                    <option value="Other">Other</option>
-                  </select>
+                  <div className="relative">
+                    <select
+                      value={formData.role}
+                      onChange={(e) => handleChange('role', e.target.value)}
+                      className={`w-full appearance-none bg-surface-2 border ${errors.role ? 'border-coral' : 'border-line'} ${formData.role ? 'text-paper' : 'text-muted'} px-5 py-2.5 pr-10 rounded-[3px] text-[16px] sm:text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors cursor-pointer hover:border-line-soft`}
+                    >
+                      <option value="" className="text-muted">Select your role</option>
+                      <option value="Project Manager">Project Manager</option>
+                      <option value="Product Manager">Product Manager</option>
+                      <option value="Team Lead">Team Lead</option>
+                      <option value="Developer">Developer</option>
+                      <option value="Designer">Designer</option>
+                      <option value="QA Engineer">QA Engineer</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-amber-dim"
+                    >
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </div>
                   {errors.role && <div className="field-error mt-1.5">Select your role.</div>}
                 </div>
 
-                <div className={`mb-3.5 field pw-field ${errors.password ? 'has-error' : ''}`}>
+                <div className={`field pw-field ${errors.password ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Password</label>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={formData.password}
                       onChange={(e) => handleChange('password', e.target.value)}
-                      className={`w-full bg-surface-2 border ${errors.password ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 pr-10 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                      className={`w-full bg-surface-2 border ${errors.password ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 pr-10 rounded-[3px] text-[16px] sm:text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                       placeholder="••••••••"
                     />
                     <button
@@ -217,14 +228,14 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
                   {errors.password && <div className="field-error mt-1.5">Password must be at least 6 characters.</div>}
                 </div>
 
-                <div className={`mb-4 field pw-field ${errors.confirmPassword ? 'has-error' : ''}`}>
+                <div className={`field pw-field ${errors.confirmPassword ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Confirm Password</label>
                   <div className="relative">
                     <input
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={formData.confirmPassword}
                       onChange={(e) => handleChange('confirmPassword', e.target.value)}
-                      className={`w-full bg-surface-2 border ${errors.confirmPassword ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 pr-10 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                      className={`w-full bg-surface-2 border ${errors.confirmPassword ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 pr-10 rounded-[3px] text-[16px] sm:text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                       placeholder="••••••••"
                     />
                     <button
@@ -248,7 +259,7 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
                   {errors.confirmPassword && <div className="field-error mt-1.5">Passwords do not match.</div>}
                 </div>
 
-                <div className={`mb-5 flex flex-col items-center justify-center ${errors.terms ? 'has-error' : ''}`}>
+                <div className={`flex flex-col items-center justify-center ${errors.terms ? 'has-error' : ''}`}>
                   <label className="flex items-center justify-center gap-2 text-[10.5px] text-muted whitespace-nowrap cursor-pointer">
                     <input 
                       type="checkbox" 
