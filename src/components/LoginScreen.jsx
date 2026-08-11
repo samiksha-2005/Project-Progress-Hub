@@ -94,27 +94,27 @@ function LoginScreen({ onLogin, onShowRegister, showToast }) {
                 <p className="text-[12.5px] text-muted">Sign in to open your dashboard.</p>
               </div>
 
-              <form onSubmit={handleSubmit}>
-                <div className={`mb-4 field ${emailError ? 'has-error' : ''}`}>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <div className={`field ${emailError ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Email</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full bg-surface-2 border ${emailError ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                    className={`w-full bg-surface-2 border ${emailError ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 rounded-[3px] text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                     placeholder="you@company.com"
                   />
                   {emailError && <div className="field-error mt-1.5">Enter a valid email address.</div>}
                 </div>
 
-                <div className={`mb-4 field pw-field ${passwordError ? 'has-error' : ''}`}>
+                <div className={`field pw-field ${passwordError ? 'has-error' : ''}`}>
                   <label className="block font-mono text-[10.5px] uppercase tracking-wider text-muted mb-1.5">Password</label>
                   <div className="relative">
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className={`w-full bg-surface-2 border ${passwordError ? 'border-coral' : 'border-line'} text-paper px-3 py-2.5 pr-10 rounded-[3px] text-[13px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
+                      className={`w-full bg-surface-2 border ${passwordError ? 'border-coral' : 'border-line'} text-paper px-5 py-2.5 pr-10 rounded-[3px] text-[12px] font-sans focus:border-amber-dim focus:outline-none transition-colors`}
                       placeholder="••••••••"
                     />
                     <button
@@ -138,7 +138,7 @@ function LoginScreen({ onLogin, onShowRegister, showToast }) {
                   {passwordError && <div className="field-error mt-1.5">Password must be at least 4 characters.</div>}
                 </div>
 
-                <div className="flex items-center justify-between mb-5 text-xs login-row-between">
+                <div className="flex items-center justify-between text-xs login-row-between">
                   <label className="checkbox-label">
                     <input type="checkbox" />
                     Remember me
@@ -158,15 +158,6 @@ function LoginScreen({ onLogin, onShowRegister, showToast }) {
                   Sign in
                 </button>
               </form>
-
-              <div className="divider mt-6">
-                <span>Demo access</span>
-              </div>
-
-              <div className="demo-note mt-3">
-                This is a front-end demo — no real auth server.<br />
-                Enter <b className="text-paper-dim">any email</b> and a password of <b className="text-paper-dim">4+ characters</b> to continue.
-              </div>
 
               <p className="text-center mt-5 text-[12.5px] text-muted signup-hint">
                 New here? <a href="#" onClick={(e) => { e.preventDefault(); onShowRegister(); }}>Register →</a>

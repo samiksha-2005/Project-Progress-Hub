@@ -248,8 +248,8 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
                   {errors.confirmPassword && <div className="field-error mt-1.5">Passwords do not match.</div>}
                 </div>
 
-                <div className={`mb-4 ${errors.terms ? 'has-error' : ''}`}>
-                  <label className="checkbox-label">
+                <div className={`mb-5 flex flex-col items-center justify-center ${errors.terms ? 'has-error' : ''}`}>
+                  <label className="flex items-center justify-center gap-2 text-[10.5px] text-muted whitespace-nowrap cursor-pointer">
                     <input 
                       type="checkbox" 
                       checked={agreeTerms}
@@ -259,10 +259,13 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
                           setErrors(prev => ({ ...prev, terms: false }))
                         }
                       }}
+                      className="m-0 cursor-pointer"
                     />
-                    I agree to the <a href="#" className="link-muted">Terms of Service</a> and <a href="#" className="link-muted">Privacy Policy</a>
+                    <span>
+                      I agree to the <a href="#" className="text-paper hover:text-amber transition-colors underline decoration-line/50 underline-offset-2">Terms of Service</a> and <a href="#" className="text-paper hover:text-amber transition-colors underline decoration-line/50 underline-offset-2">Privacy Policy</a>
+                    </span>
                   </label>
-                  {errors.terms && <div className="field-error mt-1.5">You must agree to continue.</div>}
+                  {errors.terms && <div className="field-error mt-1.5 text-center">You must agree to continue.</div>}
                 </div>
 
                 <button
@@ -277,15 +280,6 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
                   Create account
                 </button>
               </form>
-
-              <div className="divider mt-5">
-                <span>Demo mode</span>
-              </div>
-
-              <div className="demo-note mt-3">
-                This is a front-end demo — no real registration.<br />
-                Fill the form to continue to the dashboard.
-              </div>
 
               <p className="text-center mt-5 text-[12.5px] text-muted signup-hint">
                 Already have an account? <a href="#" onClick={(e) => { e.preventDefault(); onBackToLogin(); }}>Sign in →</a>
