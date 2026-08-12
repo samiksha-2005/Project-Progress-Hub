@@ -272,10 +272,15 @@ export function useAppState(showToast) {
     }))
   }
 
-  const refreshTeam = () => {
+  const refreshTeam = async () => {
+  if (typeof showToast === 'function') {
     showToast('Refreshing roster from API…')
-    loadTeamFromAPI()
   }
+  await loadTeamFromAPI()
+  if (typeof showToast === 'function') {
+    showToast('Roster updated')
+  }
+}
 
   return {
     state,

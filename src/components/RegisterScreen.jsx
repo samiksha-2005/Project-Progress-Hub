@@ -28,6 +28,7 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
     const newErrors = {}
 
     // Validation
@@ -62,8 +63,15 @@ function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
       return
     }
 
+    // Only call onRegister after validation passes
     setTimeout(() => {
-      onRegister(formData)
+      onRegister({
+        name: formData.fullName,
+        email: formData.email,
+        company: formData.company,
+        role: formData.role,
+        password: formData.password
+      })
       showToast(`Welcome to Drafting, ${formData.fullName.split(' ')[0]}!`)
     }, 700)
   }

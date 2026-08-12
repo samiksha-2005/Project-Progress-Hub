@@ -117,7 +117,7 @@ function Dashboard({ onLogout, showToast }) {
       <Sidebar
         projects={state.projects}
         currentView={currentView}
-        onViewChange={handleViewChange}
+        onViewChange={setCurrentView}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         onLogout={onLogout}
