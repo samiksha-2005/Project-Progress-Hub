@@ -2,8 +2,6 @@
 
 <div align="center">
 
-![Project Progress Hub Banner](public/screenshot.png)
-
 **A modern, lightweight project management solution for agile teams**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -219,6 +217,6 @@ If you have any questions or need help, please:
 
 **⭐ Star this repo if you find it helpful!**
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by Samiksha
 
 </div>
