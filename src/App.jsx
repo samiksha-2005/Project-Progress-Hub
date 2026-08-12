@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import LoginScreen from './components/LoginScreen'
-import RegisterScreen from './components/RegisterScreen'
-import Dashboard from './components/Dashboard'
+import LoginScreen from './components/LoginScreen.jsx'
+import RegisterScreen from './components/RegisterScreen.jsx'
+import Dashboard from './components/Dashboard.jsx'
 import './App.css'
 
 function App() {

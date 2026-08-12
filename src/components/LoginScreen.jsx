@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Compass from './Compass'
+import Compass from './Compass.jsx'
 
 function LoginScreen({ onLogin, onShowRegister, showToast }) {
   const [email, setEmail] = useState('')

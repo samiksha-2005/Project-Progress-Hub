@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import Sidebar from './Sidebar'
-import Topbar from './Topbar'
-import Overview from './views/Overview'
-import Board from './views/Board'
-import Team from './views/Team'
-import Analytics from './views/Analytics'
-import TaskModal from './TaskModal'
-import MemberModal from './MemberModal'
-import { useAppState } from '../hooks/useAppState'
+import Sidebar from './Sidebar.jsx'
+import Topbar from './Topbar.jsx'
+import Overview from './views/Overview.jsx'
+import Board from './views/Board.jsx'
+import Team from './views/Team.jsx'
+import Analytics from './views/Analytics.jsx'
+import TaskModal from './TaskModal.jsx'
+import MemberModal from './MemberModal.jsx'
+import { useAppState } from '../hooks/useAppState.js'
 
 function Dashboard({ onLogout, showToast }) {
   const [currentView, setCurrentView] = useState('overview')
