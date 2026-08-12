@@ -5,7 +5,7 @@ let colorCursor = 0
 const nextColor = () => palette[(colorCursor++) % palette.length]
 
 const localFallbackTeam = [
-  { name: 'Maya Chen', role: 'Product Designer' },
+  { name: 'Aarav Mehta', role: 'Product Designer' },
   { name: 'Diego Ramirez', role: 'Frontend Engineer' },
   { name: 'Sara Ibrahim', role: 'Backend Engineer' },
   { name: 'Owen Whitfield', role: 'QA Lead' },
@@ -132,9 +132,19 @@ export function useAppState(showToast) {
       const data = await res.json()
 
       setState(prev => {
+        // ✨ YOUR CUSTOM NAMES - CHANGE THESE ✨
+        const customNames = [
+          'Aarav Mehta',
+          'Meera Jain',
+          'Kabir Malhotra',
+          'Nisha Sharma',
+          'Anika Rao',
+          'Gaurav Desai',
+        ]
+
         const team = data.slice(0, 6).map((u, i) => ({
           id: 'm' + (prev.idSeed + 1 + i),
-          name: u.name,
+          name: customNames[i], // ← Uses your custom names instead of API names
           role: ['Frontend Engineer', 'Backend Engineer', 'Product Designer', 'QA Engineer', 'Project Manager', 'DevOps Engineer'][i % 6],
           color: nextColor(),
           workload: 30 + Math.round(Math.random() * 60),
