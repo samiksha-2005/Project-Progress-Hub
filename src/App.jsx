@@ -1,64 +1,58 @@
-import { useState } from 'react'
-import LoginScreen from './components/LoginScreen'
-import RegisterScreen from './components/RegisterScreen'
-import Dashboard from './components/Dashboard'
-import Toast from './components/Toast'
+import { useState, useEffect } from 'react'
+import Login from './components/LoginScreen.jsx'
+import Dashboard from './components/Dashboard.jsx'
+import './App.css'
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [showRegister, setShowRegister] = useState(false)
-  const [toast, setToast] = useState({ show: false, message: '', isError: false })
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const savedAuth = localStorage.getItem('isAuthenticated')
+    return savedAuth === 'true'
+  })
 
-  const showToast = (message, isError = false) => {
-    setToast({ show: true, message, isError })
-    setTimeout(() => setToast({ show: false, message: '', isError: false }), 3000)
-  }
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user')
+    return savedUser ? JSON.parse(savedUser) : null
+  })
 
-  const handleLogin = () => {
-    setIsAuthenticated(true)
-  }
+  useEffect(() => {
+    localStorage.setItem('isAuthenticated', isAuthenticated)
+    if (user) {
+      localStorage.setItem('user', JSON.stringify(user))
+    } else {
+      localStorage.removeItem('user')
+    }
+  }, [isAuthenticated, user])
 
-  const handleRegister = (formData) => {
-    // In a real app, you'd send this to your backend
-    console.log('Registration data:', formData)
+  const handleLogin = (credentials) => {
+    // Add safety check
+    if (!credentials || !credentials.email || !credentials.password) {
+      console.error('Invalid credentials provided')
+      return
+    }
+
+    // Simple demo authentication - accepts any email/password
+    const userData = {
+      email: credentials.email,
+      name: credentials.email.split('@')[0],
+    }
+    setUser(userData)
     setIsAuthenticated(true)
   }
 
   const handleLogout = () => {
     setIsAuthenticated(false)
-    setShowRegister(false)
-  }
-
-  if (isAuthenticated) {
-    return (
-      <>
-        <Dashboard onLogout={handleLogout} showToast={showToast} />
-        {toast.show && <Toast message={toast.message} isError={toast.isError} />}
-      </>
-    )
-  }
-
-  if (showRegister) {
-    return (
-      <>
-        <RegisterScreen 
-          onRegister={handleRegister}
-          onBackToLogin={() => setShowRegister(false)}
-          showToast={showToast}
-        />
-        {toast.show && <Toast message={toast.message} isError={toast.isError} />}
-      </>
-    )
+    setUser(null)
+    localStorage.removeItem('isAuthenticated')
+    localStorage.removeItem('user')
   }
 
   return (
     <>
-      <LoginScreen 
-        onLogin={handleLogin}
-        onShowRegister={() => setShowRegister(true)}
-        showToast={showToast}
-      />
-      {toast.show && <Toast message={toast.message} isError={toast.isError} />}
+      {isAuthenticated ? (
+        <Dashboard onLogout={handleLogout} user={user} />
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
     </>
   )
 }

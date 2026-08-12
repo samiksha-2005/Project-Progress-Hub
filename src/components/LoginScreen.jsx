@@ -27,7 +27,12 @@ function LoginScreen({ onLogin, onShowRegister, showToast }) {
     }
 
     setTimeout(() => {
-      onLogin()
+      // Pass credentials object to onLogin
+      onLogin({ 
+        email: email.trim(), 
+        password: password.trim(),
+        rememberMe: false 
+      })
       showToast(`Welcome back, ${email.split('@')[0]}`)
     }, 700)
   }
