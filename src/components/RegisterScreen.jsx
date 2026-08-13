@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Compass from './Compass.jsx'
+import Compass from './Compass'
 
 function RegisterScreen({ onRegister, onBackToLogin, showToast }) {
   const [formData, setFormData] = useState({
